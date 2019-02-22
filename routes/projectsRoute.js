@@ -35,10 +35,12 @@ router.get("/:id", async (req, res) => {
     const project = await db("projects")
       .where({ id: req.params.id })
       .first();
+    const actions = await db("actions").where("project_id", req.params.id);
     if (project) {
       res.status(200).json({
         ...project,
-        completed: project.completed === 1 ? true : false
+        completed: project.completed === 1 ? true : false,
+        actions
       });
     } else {
       res

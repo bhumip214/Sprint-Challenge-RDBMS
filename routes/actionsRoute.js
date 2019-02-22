@@ -31,6 +31,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Get action by id
+router.get("/:id", async (req, res) => {
+  try {
+    const action = await db("actions")
+      .where({ id: req.params.id })
+      .first();
+
+    if (action) {
+      res
+        .status(200)
+        .json({ ...action, completed: action.completed === 1 ? true : false });
+    } else {
+      res
+        .status(404)
+        .json({ message: "The action with the specified ID does not exist." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "The action information could not be retrieved." });
+  }
+});
+
 // Create action request
 router.post("/", async (req, res) => {
   try {
