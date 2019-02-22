@@ -91,13 +91,13 @@ router.put("/:id", async (req, res) => {
       res.status(200).json(project);
     } else {
       res.status(404).json({
-        message: "The projects with the specified ID does not exist."
+        message: "The project with the specified ID does not exist."
       });
     }
   } catch (error) {
     res
       .status(500)
-      .json({ message: "The projects information could not be modified." });
+      .json({ message: "The project information could not be modified." });
   }
 });
 
