@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const projectsRoute = require("./routes/projectsRoute");
+const actionsRoute = require("./routes/actionsRoute");
 
 const server = express();
 
@@ -11,6 +12,7 @@ server.use(cors());
 server.use(helmet());
 server.use(morgan("dev"));
 server.use("/api/projects/", projectsRoute);
+server.use("/api/actions/", actionsRoute);
 
 server.get("/", async (req, res, next) => {
   res.send(`

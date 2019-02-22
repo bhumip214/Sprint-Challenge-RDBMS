@@ -29,6 +29,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Get project by id
+router.get("/:id", async (req, res) => {
+  try {
+    const project = await db("projects")
+      .where({ id: req.params.id })
+      .first();
+    if (project) {
+      res.status(200).json({
+        ...project,
+        completed: project.completed === 1 ? true : false
+      });
+    } else {
+      res
+        .status(404)
+        .json({ message: "The project with the specified ID does not exist." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "The project information could not be retrieved." });
+  }
+});
+
 // Create project request
 router.post("/", charlimit, async (req, res) => {
   try {
@@ -38,12 +61,10 @@ router.post("/", charlimit, async (req, res) => {
       const project = await db("projects")
         .where({ id })
         .first();
-      res
-        .status(201)
-        .json({
-          ...project,
-          completed: project.completed === 1 ? true : false
-        });
+      res.status(201).json({
+        ...project,
+        completed: project.completed === 1 ? true : false
+      });
     } else {
       res.status(400).json({
         errorMessage: "Please provide the name and description for the project."
@@ -53,6 +74,49 @@ router.post("/", charlimit, async (req, res) => {
     res.status(500).json({
       message: "There was an error while saving the project to the database"
     });
+  }
+});
+
+// Update project request
+router.put("/:id", async (req, res) => {
+  try {
+    const count = await db("projects")
+      .where({ id: req.params.id })
+      .update(req.body);
+
+    if (count > 0) {
+      const project = await db("projects")
+        .where({ id: req.params.id })
+        .first();
+      res.status(200).json(project);
+    } else {
+      res.status(404).json({
+        message: "The projects with the specified ID does not exist."
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "The projects information could not be modified." });
+  }
+});
+
+//delete project request
+router.delete("/:id", async (req, res) => {
+  try {
+    const count = await db("projects")
+      .where({ id: req.params.id })
+      .del();
+
+    if (count > 0) {
+      res.status(204).end();
+    } else {
+      res
+        .status(404)
+        .json({ message: "The project with the specified ID does not exist." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "The project could not be deleted" });
   }
 });
 
