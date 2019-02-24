@@ -22,7 +22,11 @@ const charlimit = (req, res, next) => {
 router.get("/", async (req, res) => {
   try {
     const actions = await db("actions");
-    res.status(200).json(actions);
+    res.status(200).json(
+      actions.map(action => {
+        return { ...action, completed: action.completed === 1 ? true : false };
+      })
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json({

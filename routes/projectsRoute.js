@@ -20,7 +20,14 @@ const charlimit = (req, res, next) => {
 router.get("/", async (req, res) => {
   try {
     const projects = await db("projects");
-    res.status(200).json(projects);
+    res.status(200).json(
+      projects.map(project => {
+        return {
+          ...project,
+          completed: project.completed === 1 ? true : false
+        };
+      })
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -40,7 +47,12 @@ router.get("/:id", async (req, res) => {
       res.status(200).json({
         ...project,
         completed: project.completed === 1 ? true : false,
-        actions
+        actions: actions.map(action => {
+          return {
+            ...action,
+            completed: action.completed === 1 ? true : false
+          };
+        })
       });
     } else {
       res
